@@ -1,10 +1,13 @@
 # Import utilities and helper files
+import os
 from flask import Flask, jsonify, request, make_response, send_from_directory
 from flask_cors import CORS
 from data import get_sample_data
 
-app = Flask(__name__, static_folder="../client", static_url_path='')
+client_folder = os.path.join(os.path.dirname(__file__), 'client')
+app = Flask(__name__, static_folder=client_folder, static_url_path='')
 CORS(app)
+
 
 # Get the data from data.py for in memory list new posts are appeneded here
 events = get_sample_data()
@@ -19,7 +22,7 @@ def welcome():
 """
 Create a GET route for "/events". This route should return the full list of events as JSON. The front end will fetch on page load to display the events list. Respond with 200 - ok.
 """
-@app.route("/events/data", methods=["GET"])
+@app.route("/events", methods=["GET"])
 def display_events():
     return make_response(jsonify(events), 200)
 

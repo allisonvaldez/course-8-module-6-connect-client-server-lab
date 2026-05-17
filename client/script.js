@@ -29,3 +29,4 @@ function renderEvent(event) {
   const li = document.createElement("li");
   li.textContent = event.title;
   document.querySelector("#event-list").appendChild(li);
+}
