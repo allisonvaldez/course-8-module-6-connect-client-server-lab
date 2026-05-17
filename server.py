@@ -8,8 +8,7 @@ client_folder = os.path.join(os.path.dirname(__file__), 'client')
 app = Flask(__name__, static_folder=client_folder, static_url_path='')
 CORS(app)
 
-
-# Get the data from data.py for in memory list new posts are appeneded here
+# Get the data from data.py for in memory list new posts are appended here
 events = get_sample_data()
 
 """
@@ -17,6 +16,14 @@ Create a route for "/" it serves the index.html files from the client folder. Th
 """
 @app.route("/", methods=["GET"])
 def welcome():
+    return make_response(jsonify({"message": "Welcome to the Event Catalog!"}), 200)
+
+"""
+Serve the HTML frontend from /client so the browser can still load the page.
+"""
+@app.route("/client", methods=["GET"])
+def serve_client():
+    # send_from_directory safely serves index.html from the client folder
     return send_from_directory(app.static_folder, "index.html")
 
 """
@@ -41,8 +48,8 @@ def create_event():
     # Error handling and control flow to see if the data or event exists in the request
     if not data or "title" not in data:
         return make_response(jsonify({"error": "Title is required"}), 400)
-    
-    # Create unique ID 
+
+    # Create unique ID
     new_id = max(e["id"] for e in events) + 1 if events else 1
 
     # Create new event object
@@ -51,12 +58,12 @@ def create_event():
         "title": data["title"]
     }
 
-    # append it to out events object in already in memory
+    # append it to our events object already in memory
     events.append(new_event)
 
     # Return the new event with 201
     return make_response(jsonify(new_event), 201)
-    
+
 
 if __name__ == "__main__":
     app.run(port=5555, debug=True)
